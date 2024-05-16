@@ -20,7 +20,9 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Director_ReportPrepareness_FullMethodName = "/main.Director/ReportPrepareness"
-	Director_ChooseProcess_FullMethodName     = "/main.Director/ChooseProcess"
+	Director_ChooseWeapon_FullMethodName      = "/main.Director/ChooseWeapon"
+	Director_ChoosePath_FullMethodName        = "/main.Director/ChoosePath"
+	Director_GuessNumber_FullMethodName       = "/main.Director/GuessNumber"
 	Director_NotifyElimination_FullMethodName = "/main.Director/NotifyElimination"
 	Director_CheckMoneyBalance_FullMethodName = "/main.Director/CheckMoneyBalance"
 	Director_StoreChoice_FullMethodName       = "/main.Director/StoreChoice"
@@ -31,10 +33,12 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DirectorClient interface {
 	ReportPrepareness(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*PrepareResponse, error)
-	ChooseProcess(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error)
+	ChooseWeapon(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceResponse, error)
+	ChoosePath(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceResponse, error)
+	GuessNumber(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*Confirmation, error)
 	NotifyElimination(ctx context.Context, in *EliminationNotification, opts ...grpc.CallOption) (*Confirmation, error)
 	CheckMoneyBalance(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*MoneyBalance, error)
-	StoreChoice(ctx context.Context, in *ChoiceMercenary, opts ...grpc.CallOption) (*Confirmation, error)
+	StoreChoice(ctx context.Context, in *ChoiceResponse, opts ...grpc.CallOption) (*Confirmation, error)
 }
 
 type directorClient struct {
@@ -54,9 +58,27 @@ func (c *directorClient) ReportPrepareness(ctx context.Context, in *PrepareReque
 	return out, nil
 }
 
-func (c *directorClient) ChooseProcess(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error) {
-	out := new(ChoiceMercenary)
-	err := c.cc.Invoke(ctx, Director_ChooseProcess_FullMethodName, in, out, opts...)
+func (c *directorClient) ChooseWeapon(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceResponse, error) {
+	out := new(ChoiceResponse)
+	err := c.cc.Invoke(ctx, Director_ChooseWeapon_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *directorClient) ChoosePath(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceResponse, error) {
+	out := new(ChoiceResponse)
+	err := c.cc.Invoke(ctx, Director_ChoosePath_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *directorClient) GuessNumber(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*Confirmation, error) {
+	out := new(Confirmation)
+	err := c.cc.Invoke(ctx, Director_GuessNumber_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +103,7 @@ func (c *directorClient) CheckMoneyBalance(ctx context.Context, in *PrepareReque
 	return out, nil
 }
 
-func (c *directorClient) StoreChoice(ctx context.Context, in *ChoiceMercenary, opts ...grpc.CallOption) (*Confirmation, error) {
+func (c *directorClient) StoreChoice(ctx context.Context, in *ChoiceResponse, opts ...grpc.CallOption) (*Confirmation, error) {
 	out := new(Confirmation)
 	err := c.cc.Invoke(ctx, Director_StoreChoice_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -95,10 +117,12 @@ func (c *directorClient) StoreChoice(ctx context.Context, in *ChoiceMercenary, o
 // for forward compatibility
 type DirectorServer interface {
 	ReportPrepareness(context.Context, *PrepareRequest) (*PrepareResponse, error)
-	ChooseProcess(context.Context, *ChoiceRequest) (*ChoiceMercenary, error)
+	ChooseWeapon(context.Context, *ChoiceRequest) (*ChoiceResponse, error)
+	ChoosePath(context.Context, *ChoiceRequest) (*ChoiceResponse, error)
+	GuessNumber(context.Context, *ChoiceRequest) (*Confirmation, error)
 	NotifyElimination(context.Context, *EliminationNotification) (*Confirmation, error)
 	CheckMoneyBalance(context.Context, *PrepareRequest) (*MoneyBalance, error)
-	StoreChoice(context.Context, *ChoiceMercenary) (*Confirmation, error)
+	StoreChoice(context.Context, *ChoiceResponse) (*Confirmation, error)
 	mustEmbedUnimplementedDirectorServer()
 }
 
@@ -109,8 +133,14 @@ type UnimplementedDirectorServer struct {
 func (UnimplementedDirectorServer) ReportPrepareness(context.Context, *PrepareRequest) (*PrepareResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReportPrepareness not implemented")
 }
-func (UnimplementedDirectorServer) ChooseProcess(context.Context, *ChoiceRequest) (*ChoiceMercenary, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChooseProcess not implemented")
+func (UnimplementedDirectorServer) ChooseWeapon(context.Context, *ChoiceRequest) (*ChoiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChooseWeapon not implemented")
+}
+func (UnimplementedDirectorServer) ChoosePath(context.Context, *ChoiceRequest) (*ChoiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChoosePath not implemented")
+}
+func (UnimplementedDirectorServer) GuessNumber(context.Context, *ChoiceRequest) (*Confirmation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GuessNumber not implemented")
 }
 func (UnimplementedDirectorServer) NotifyElimination(context.Context, *EliminationNotification) (*Confirmation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NotifyElimination not implemented")
@@ -118,7 +148,7 @@ func (UnimplementedDirectorServer) NotifyElimination(context.Context, *Eliminati
 func (UnimplementedDirectorServer) CheckMoneyBalance(context.Context, *PrepareRequest) (*MoneyBalance, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckMoneyBalance not implemented")
 }
-func (UnimplementedDirectorServer) StoreChoice(context.Context, *ChoiceMercenary) (*Confirmation, error) {
+func (UnimplementedDirectorServer) StoreChoice(context.Context, *ChoiceResponse) (*Confirmation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StoreChoice not implemented")
 }
 func (UnimplementedDirectorServer) mustEmbedUnimplementedDirectorServer() {}
@@ -152,20 +182,56 @@ func _Director_ReportPrepareness_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Director_ChooseProcess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Director_ChooseWeapon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChoiceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DirectorServer).ChooseProcess(ctx, in)
+		return srv.(DirectorServer).ChooseWeapon(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Director_ChooseProcess_FullMethodName,
+		FullMethod: Director_ChooseWeapon_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DirectorServer).ChooseProcess(ctx, req.(*ChoiceRequest))
+		return srv.(DirectorServer).ChooseWeapon(ctx, req.(*ChoiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Director_ChoosePath_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChoiceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DirectorServer).ChoosePath(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Director_ChoosePath_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DirectorServer).ChoosePath(ctx, req.(*ChoiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Director_GuessNumber_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChoiceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DirectorServer).GuessNumber(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Director_GuessNumber_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DirectorServer).GuessNumber(ctx, req.(*ChoiceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -207,7 +273,7 @@ func _Director_CheckMoneyBalance_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _Director_StoreChoice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChoiceMercenary)
+	in := new(ChoiceResponse)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -219,7 +285,7 @@ func _Director_StoreChoice_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: Director_StoreChoice_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DirectorServer).StoreChoice(ctx, req.(*ChoiceMercenary))
+		return srv.(DirectorServer).StoreChoice(ctx, req.(*ChoiceResponse))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -236,8 +302,16 @@ var Director_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Director_ReportPrepareness_Handler,
 		},
 		{
-			MethodName: "ChooseProcess",
-			Handler:    _Director_ChooseProcess_Handler,
+			MethodName: "ChooseWeapon",
+			Handler:    _Director_ChooseWeapon_Handler,
+		},
+		{
+			MethodName: "ChoosePath",
+			Handler:    _Director_ChoosePath_Handler,
+		},
+		{
+			MethodName: "GuessNumber",
+			Handler:    _Director_GuessNumber_Handler,
 		},
 		{
 			MethodName: "NotifyElimination",
@@ -264,7 +338,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NameNodeClient interface {
-	DistributeDecisions(ctx context.Context, in *ChoiceMercenary, opts ...grpc.CallOption) (*Confirmation, error)
+	DistributeDecisions(ctx context.Context, in *ChoiceResponse, opts ...grpc.CallOption) (*Confirmation, error)
 }
 
 type nameNodeClient struct {
@@ -275,7 +349,7 @@ func NewNameNodeClient(cc grpc.ClientConnInterface) NameNodeClient {
 	return &nameNodeClient{cc}
 }
 
-func (c *nameNodeClient) DistributeDecisions(ctx context.Context, in *ChoiceMercenary, opts ...grpc.CallOption) (*Confirmation, error) {
+func (c *nameNodeClient) DistributeDecisions(ctx context.Context, in *ChoiceResponse, opts ...grpc.CallOption) (*Confirmation, error) {
 	out := new(Confirmation)
 	err := c.cc.Invoke(ctx, NameNode_DistributeDecisions_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -288,7 +362,7 @@ func (c *nameNodeClient) DistributeDecisions(ctx context.Context, in *ChoiceMerc
 // All implementations must embed UnimplementedNameNodeServer
 // for forward compatibility
 type NameNodeServer interface {
-	DistributeDecisions(context.Context, *ChoiceMercenary) (*Confirmation, error)
+	DistributeDecisions(context.Context, *ChoiceResponse) (*Confirmation, error)
 	mustEmbedUnimplementedNameNodeServer()
 }
 
@@ -296,7 +370,7 @@ type NameNodeServer interface {
 type UnimplementedNameNodeServer struct {
 }
 
-func (UnimplementedNameNodeServer) DistributeDecisions(context.Context, *ChoiceMercenary) (*Confirmation, error) {
+func (UnimplementedNameNodeServer) DistributeDecisions(context.Context, *ChoiceResponse) (*Confirmation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DistributeDecisions not implemented")
 }
 func (UnimplementedNameNodeServer) mustEmbedUnimplementedNameNodeServer() {}
@@ -313,7 +387,7 @@ func RegisterNameNodeServer(s grpc.ServiceRegistrar, srv NameNodeServer) {
 }
 
 func _NameNode_DistributeDecisions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChoiceMercenary)
+	in := new(ChoiceResponse)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -325,7 +399,7 @@ func _NameNode_DistributeDecisions_Handler(srv interface{}, ctx context.Context,
 		FullMethod: NameNode_DistributeDecisions_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NameNodeServer).DistributeDecisions(ctx, req.(*ChoiceMercenary))
+		return srv.(NameNodeServer).DistributeDecisions(ctx, req.(*ChoiceResponse))
 	}
 	return interceptor(ctx, in, info, handler)
 }
