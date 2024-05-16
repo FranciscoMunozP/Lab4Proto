@@ -330,6 +330,57 @@ var Director_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "Director/services.proto",
 }
 
+const ()
+
+// MercenarioClient is the client API for Mercenario service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type MercenarioClient interface {
+}
+
+type mercenarioClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMercenarioClient(cc grpc.ClientConnInterface) MercenarioClient {
+	return &mercenarioClient{cc}
+}
+
+// MercenarioServer is the server API for Mercenario service.
+// All implementations must embed UnimplementedMercenarioServer
+// for forward compatibility
+type MercenarioServer interface {
+	mustEmbedUnimplementedMercenarioServer()
+}
+
+// UnimplementedMercenarioServer must be embedded to have forward compatible implementations.
+type UnimplementedMercenarioServer struct {
+}
+
+func (UnimplementedMercenarioServer) mustEmbedUnimplementedMercenarioServer() {}
+
+// UnsafeMercenarioServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MercenarioServer will
+// result in compilation errors.
+type UnsafeMercenarioServer interface {
+	mustEmbedUnimplementedMercenarioServer()
+}
+
+func RegisterMercenarioServer(s grpc.ServiceRegistrar, srv MercenarioServer) {
+	s.RegisterService(&Mercenario_ServiceDesc, srv)
+}
+
+// Mercenario_ServiceDesc is the grpc.ServiceDesc for Mercenario service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Mercenario_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "main.Mercenario",
+	HandlerType: (*MercenarioServer)(nil),
+	Methods:     []grpc.MethodDesc{},
+	Streams:     []grpc.StreamDesc{},
+	Metadata:    "Director/services.proto",
+}
+
 const (
 	NameNode_DistributeDecisions_FullMethodName = "/main.NameNode/DistributeDecisions"
 )
