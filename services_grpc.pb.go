@@ -21,7 +21,6 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Director_ReportPrepareness_FullMethodName = "/main.Director/ReportPrepareness"
 	Director_CheckMoneyBalance_FullMethodName = "/main.Director/CheckMoneyBalance"
-	Director_ChooseProcess_FullMethodName     = "/main.Director/ChooseProcess"
 )
 
 // DirectorClient is the client API for Director service.
@@ -30,7 +29,6 @@ const (
 type DirectorClient interface {
 	ReportPrepareness(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*PrepareResponse, error)
 	CheckMoneyBalance(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*MoneyBalance, error)
-	ChooseProcess(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error)
 }
 
 type directorClient struct {
@@ -59,22 +57,12 @@ func (c *directorClient) CheckMoneyBalance(ctx context.Context, in *PrepareReque
 	return out, nil
 }
 
-func (c *directorClient) ChooseProcess(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error) {
-	out := new(ChoiceMercenary)
-	err := c.cc.Invoke(ctx, Director_ChooseProcess_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // DirectorServer is the server API for Director service.
 // All implementations must embed UnimplementedDirectorServer
 // for forward compatibility
 type DirectorServer interface {
 	ReportPrepareness(context.Context, *PrepareRequest) (*PrepareResponse, error)
 	CheckMoneyBalance(context.Context, *PrepareRequest) (*MoneyBalance, error)
-	ChooseProcess(context.Context, *ChoiceRequest) (*ChoiceMercenary, error)
 	mustEmbedUnimplementedDirectorServer()
 }
 
@@ -87,9 +75,6 @@ func (UnimplementedDirectorServer) ReportPrepareness(context.Context, *PrepareRe
 }
 func (UnimplementedDirectorServer) CheckMoneyBalance(context.Context, *PrepareRequest) (*MoneyBalance, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckMoneyBalance not implemented")
-}
-func (UnimplementedDirectorServer) ChooseProcess(context.Context, *ChoiceRequest) (*ChoiceMercenary, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChooseProcess not implemented")
 }
 func (UnimplementedDirectorServer) mustEmbedUnimplementedDirectorServer() {}
 
@@ -140,24 +125,6 @@ func _Director_CheckMoneyBalance_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Director_ChooseProcess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChoiceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DirectorServer).ChooseProcess(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Director_ChooseProcess_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DirectorServer).ChooseProcess(ctx, req.(*ChoiceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Director_ServiceDesc is the grpc.ServiceDesc for Director service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -173,10 +140,6 @@ var Director_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "CheckMoneyBalance",
 			Handler:    _Director_CheckMoneyBalance_Handler,
 		},
-		{
-			MethodName: "ChooseProcess",
-			Handler:    _Director_ChooseProcess_Handler,
-		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "Director/services.proto",
@@ -184,6 +147,7 @@ var Director_ServiceDesc = grpc.ServiceDesc{
 
 const (
 	Mercenario_NotifyElimination_FullMethodName = "/main.Mercenario/NotifyElimination"
+	Mercenario_ChooseProcess_FullMethodName     = "/main.Mercenario/ChooseProcess"
 )
 
 // MercenarioClient is the client API for Mercenario service.
@@ -191,6 +155,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MercenarioClient interface {
 	NotifyElimination(ctx context.Context, in *EliminationNotification, opts ...grpc.CallOption) (*Confirmation, error)
+	ChooseProcess(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error)
 }
 
 type mercenarioClient struct {
@@ -210,11 +175,21 @@ func (c *mercenarioClient) NotifyElimination(ctx context.Context, in *Eliminatio
 	return out, nil
 }
 
+func (c *mercenarioClient) ChooseProcess(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error) {
+	out := new(ChoiceMercenary)
+	err := c.cc.Invoke(ctx, Mercenario_ChooseProcess_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MercenarioServer is the server API for Mercenario service.
 // All implementations must embed UnimplementedMercenarioServer
 // for forward compatibility
 type MercenarioServer interface {
 	NotifyElimination(context.Context, *EliminationNotification) (*Confirmation, error)
+	ChooseProcess(context.Context, *ChoiceRequest) (*ChoiceMercenary, error)
 	mustEmbedUnimplementedMercenarioServer()
 }
 
@@ -224,6 +199,9 @@ type UnimplementedMercenarioServer struct {
 
 func (UnimplementedMercenarioServer) NotifyElimination(context.Context, *EliminationNotification) (*Confirmation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NotifyElimination not implemented")
+}
+func (UnimplementedMercenarioServer) ChooseProcess(context.Context, *ChoiceRequest) (*ChoiceMercenary, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChooseProcess not implemented")
 }
 func (UnimplementedMercenarioServer) mustEmbedUnimplementedMercenarioServer() {}
 
@@ -256,6 +234,24 @@ func _Mercenario_NotifyElimination_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Mercenario_ChooseProcess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChoiceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MercenarioServer).ChooseProcess(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Mercenario_ChooseProcess_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MercenarioServer).ChooseProcess(ctx, req.(*ChoiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Mercenario_ServiceDesc is the grpc.ServiceDesc for Mercenario service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +262,10 @@ var Mercenario_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NotifyElimination",
 			Handler:    _Mercenario_NotifyElimination_Handler,
+		},
+		{
+			MethodName: "ChooseProcess",
+			Handler:    _Mercenario_ChooseProcess_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
