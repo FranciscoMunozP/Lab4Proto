@@ -408,7 +408,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NameNodeClient interface {
-	StoreChoice(ctx context.Context, in *ChoiceMercenary, opts ...grpc.CallOption) (*Confirmation, error)
+	StoreChoice(ctx context.Context, in *ChoiceSave, opts ...grpc.CallOption) (*Confirmation, error)
 	RecoverChoice(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error)
 }
 
@@ -420,7 +420,7 @@ func NewNameNodeClient(cc grpc.ClientConnInterface) NameNodeClient {
 	return &nameNodeClient{cc}
 }
 
-func (c *nameNodeClient) StoreChoice(ctx context.Context, in *ChoiceMercenary, opts ...grpc.CallOption) (*Confirmation, error) {
+func (c *nameNodeClient) StoreChoice(ctx context.Context, in *ChoiceSave, opts ...grpc.CallOption) (*Confirmation, error) {
 	out := new(Confirmation)
 	err := c.cc.Invoke(ctx, NameNode_StoreChoice_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -442,7 +442,7 @@ func (c *nameNodeClient) RecoverChoice(ctx context.Context, in *ChoiceRequest, o
 // All implementations must embed UnimplementedNameNodeServer
 // for forward compatibility
 type NameNodeServer interface {
-	StoreChoice(context.Context, *ChoiceMercenary) (*Confirmation, error)
+	StoreChoice(context.Context, *ChoiceSave) (*Confirmation, error)
 	RecoverChoice(context.Context, *ChoiceRequest) (*ChoiceMercenary, error)
 	mustEmbedUnimplementedNameNodeServer()
 }
@@ -451,7 +451,7 @@ type NameNodeServer interface {
 type UnimplementedNameNodeServer struct {
 }
 
-func (UnimplementedNameNodeServer) StoreChoice(context.Context, *ChoiceMercenary) (*Confirmation, error) {
+func (UnimplementedNameNodeServer) StoreChoice(context.Context, *ChoiceSave) (*Confirmation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StoreChoice not implemented")
 }
 func (UnimplementedNameNodeServer) RecoverChoice(context.Context, *ChoiceRequest) (*ChoiceMercenary, error) {
@@ -471,7 +471,7 @@ func RegisterNameNodeServer(s grpc.ServiceRegistrar, srv NameNodeServer) {
 }
 
 func _NameNode_StoreChoice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChoiceMercenary)
+	in := new(ChoiceSave)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -483,7 +483,7 @@ func _NameNode_StoreChoice_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: NameNode_StoreChoice_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NameNodeServer).StoreChoice(ctx, req.(*ChoiceMercenary))
+		return srv.(NameNodeServer).StoreChoice(ctx, req.(*ChoiceSave))
 	}
 	return interceptor(ctx, in, info, handler)
 }
