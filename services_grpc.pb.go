@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v5.26.1
-// source: Director/services.proto
+// source: director/services.proto
 
 package proto
 
@@ -19,7 +19,6 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Director_ReportPrepareness_FullMethodName = "/main.Director/ReportPrepareness"
 	Director_CheckMoneyBalance_FullMethodName = "/main.Director/CheckMoneyBalance"
 )
 
@@ -27,7 +26,6 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DirectorClient interface {
-	ReportPrepareness(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*PrepareResponse, error)
 	CheckMoneyBalance(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*MoneyBalance, error)
 }
 
@@ -37,15 +35,6 @@ type directorClient struct {
 
 func NewDirectorClient(cc grpc.ClientConnInterface) DirectorClient {
 	return &directorClient{cc}
-}
-
-func (c *directorClient) ReportPrepareness(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*PrepareResponse, error) {
-	out := new(PrepareResponse)
-	err := c.cc.Invoke(ctx, Director_ReportPrepareness_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *directorClient) CheckMoneyBalance(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*MoneyBalance, error) {
@@ -61,7 +50,6 @@ func (c *directorClient) CheckMoneyBalance(ctx context.Context, in *PrepareReque
 // All implementations must embed UnimplementedDirectorServer
 // for forward compatibility
 type DirectorServer interface {
-	ReportPrepareness(context.Context, *PrepareRequest) (*PrepareResponse, error)
 	CheckMoneyBalance(context.Context, *PrepareRequest) (*MoneyBalance, error)
 	mustEmbedUnimplementedDirectorServer()
 }
@@ -70,9 +58,6 @@ type DirectorServer interface {
 type UnimplementedDirectorServer struct {
 }
 
-func (UnimplementedDirectorServer) ReportPrepareness(context.Context, *PrepareRequest) (*PrepareResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReportPrepareness not implemented")
-}
 func (UnimplementedDirectorServer) CheckMoneyBalance(context.Context, *PrepareRequest) (*MoneyBalance, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckMoneyBalance not implemented")
 }
@@ -87,24 +72,6 @@ type UnsafeDirectorServer interface {
 
 func RegisterDirectorServer(s grpc.ServiceRegistrar, srv DirectorServer) {
 	s.RegisterService(&Director_ServiceDesc, srv)
-}
-
-func _Director_ReportPrepareness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PrepareRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DirectorServer).ReportPrepareness(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Director_ReportPrepareness_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DirectorServer).ReportPrepareness(ctx, req.(*PrepareRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Director_CheckMoneyBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -133,19 +100,16 @@ var Director_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DirectorServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ReportPrepareness",
-			Handler:    _Director_ReportPrepareness_Handler,
-		},
-		{
 			MethodName: "CheckMoneyBalance",
 			Handler:    _Director_CheckMoneyBalance_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "Director/services.proto",
+	Metadata: "director/services.proto",
 }
 
 const (
+	Mercenario_ReportPrepareness_FullMethodName = "/main.Mercenario/ReportPrepareness"
 	Mercenario_ChooseProcess_FullMethodName     = "/main.Mercenario/ChooseProcess"
 	Mercenario_NotifyElimination_FullMethodName = "/main.Mercenario/NotifyElimination"
 )
@@ -154,6 +118,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MercenarioClient interface {
+	ReportPrepareness(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*PrepareResponse, error)
 	ChooseProcess(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error)
 	NotifyElimination(ctx context.Context, in *EliminationNotification, opts ...grpc.CallOption) (*Confirmation, error)
 }
@@ -164,6 +129,15 @@ type mercenarioClient struct {
 
 func NewMercenarioClient(cc grpc.ClientConnInterface) MercenarioClient {
 	return &mercenarioClient{cc}
+}
+
+func (c *mercenarioClient) ReportPrepareness(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*PrepareResponse, error) {
+	out := new(PrepareResponse)
+	err := c.cc.Invoke(ctx, Mercenario_ReportPrepareness_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *mercenarioClient) ChooseProcess(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error) {
@@ -188,6 +162,7 @@ func (c *mercenarioClient) NotifyElimination(ctx context.Context, in *Eliminatio
 // All implementations must embed UnimplementedMercenarioServer
 // for forward compatibility
 type MercenarioServer interface {
+	ReportPrepareness(context.Context, *PrepareRequest) (*PrepareResponse, error)
 	ChooseProcess(context.Context, *ChoiceRequest) (*ChoiceMercenary, error)
 	NotifyElimination(context.Context, *EliminationNotification) (*Confirmation, error)
 	mustEmbedUnimplementedMercenarioServer()
@@ -197,6 +172,9 @@ type MercenarioServer interface {
 type UnimplementedMercenarioServer struct {
 }
 
+func (UnimplementedMercenarioServer) ReportPrepareness(context.Context, *PrepareRequest) (*PrepareResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportPrepareness not implemented")
+}
 func (UnimplementedMercenarioServer) ChooseProcess(context.Context, *ChoiceRequest) (*ChoiceMercenary, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChooseProcess not implemented")
 }
@@ -214,6 +192,24 @@ type UnsafeMercenarioServer interface {
 
 func RegisterMercenarioServer(s grpc.ServiceRegistrar, srv MercenarioServer) {
 	s.RegisterService(&Mercenario_ServiceDesc, srv)
+}
+
+func _Mercenario_ReportPrepareness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PrepareRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MercenarioServer).ReportPrepareness(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Mercenario_ReportPrepareness_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MercenarioServer).ReportPrepareness(ctx, req.(*PrepareRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Mercenario_ChooseProcess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -260,6 +256,10 @@ var Mercenario_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MercenarioServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "ReportPrepareness",
+			Handler:    _Mercenario_ReportPrepareness_Handler,
+		},
+		{
 			MethodName: "ChooseProcess",
 			Handler:    _Mercenario_ChooseProcess_Handler,
 		},
@@ -269,18 +269,20 @@ var Mercenario_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "Director/services.proto",
+	Metadata: "director/services.proto",
 }
 
 const (
 	DataNode_RequestChoice_FullMethodName = "/main.DataNode/RequestChoice"
+	DataNode_StoreToFile_FullMethodName   = "/main.DataNode/StoreToFile"
 )
 
 // DataNodeClient is the client API for DataNode service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DataNodeClient interface {
-	RequestChoice(ctx context.Context, in *ChoiceRecover, opts ...grpc.CallOption) (*ChoiceMercenary, error)
+	RequestChoice(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error)
+	StoreToFile(ctx context.Context, in *ChoiceSave, opts ...grpc.CallOption) (*Confirmation, error)
 }
 
 type dataNodeClient struct {
@@ -291,9 +293,18 @@ func NewDataNodeClient(cc grpc.ClientConnInterface) DataNodeClient {
 	return &dataNodeClient{cc}
 }
 
-func (c *dataNodeClient) RequestChoice(ctx context.Context, in *ChoiceRecover, opts ...grpc.CallOption) (*ChoiceMercenary, error) {
+func (c *dataNodeClient) RequestChoice(ctx context.Context, in *ChoiceRequest, opts ...grpc.CallOption) (*ChoiceMercenary, error) {
 	out := new(ChoiceMercenary)
 	err := c.cc.Invoke(ctx, DataNode_RequestChoice_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dataNodeClient) StoreToFile(ctx context.Context, in *ChoiceSave, opts ...grpc.CallOption) (*Confirmation, error) {
+	out := new(Confirmation)
+	err := c.cc.Invoke(ctx, DataNode_StoreToFile_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -304,7 +315,8 @@ func (c *dataNodeClient) RequestChoice(ctx context.Context, in *ChoiceRecover, o
 // All implementations must embed UnimplementedDataNodeServer
 // for forward compatibility
 type DataNodeServer interface {
-	RequestChoice(context.Context, *ChoiceRecover) (*ChoiceMercenary, error)
+	RequestChoice(context.Context, *ChoiceRequest) (*ChoiceMercenary, error)
+	StoreToFile(context.Context, *ChoiceSave) (*Confirmation, error)
 	mustEmbedUnimplementedDataNodeServer()
 }
 
@@ -312,8 +324,11 @@ type DataNodeServer interface {
 type UnimplementedDataNodeServer struct {
 }
 
-func (UnimplementedDataNodeServer) RequestChoice(context.Context, *ChoiceRecover) (*ChoiceMercenary, error) {
+func (UnimplementedDataNodeServer) RequestChoice(context.Context, *ChoiceRequest) (*ChoiceMercenary, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RequestChoice not implemented")
+}
+func (UnimplementedDataNodeServer) StoreToFile(context.Context, *ChoiceSave) (*Confirmation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StoreToFile not implemented")
 }
 func (UnimplementedDataNodeServer) mustEmbedUnimplementedDataNodeServer() {}
 
@@ -329,7 +344,7 @@ func RegisterDataNodeServer(s grpc.ServiceRegistrar, srv DataNodeServer) {
 }
 
 func _DataNode_RequestChoice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChoiceRecover)
+	in := new(ChoiceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -341,7 +356,25 @@ func _DataNode_RequestChoice_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: DataNode_RequestChoice_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataNodeServer).RequestChoice(ctx, req.(*ChoiceRecover))
+		return srv.(DataNodeServer).RequestChoice(ctx, req.(*ChoiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DataNode_StoreToFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChoiceSave)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataNodeServer).StoreToFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataNode_StoreToFile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataNodeServer).StoreToFile(ctx, req.(*ChoiceSave))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -357,9 +390,13 @@ var DataNode_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "RequestChoice",
 			Handler:    _DataNode_RequestChoice_Handler,
 		},
+		{
+			MethodName: "StoreToFile",
+			Handler:    _DataNode_StoreToFile_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "Director/services.proto",
+	Metadata: "director/services.proto",
 }
 
 const (
@@ -486,7 +523,7 @@ var NameNode_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "Director/services.proto",
+	Metadata: "director/services.proto",
 }
 
 const (
@@ -497,7 +534,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DoshBankClient interface {
-	GetCurrentBalance(ctx context.Context, in *PrepareResponse, opts ...grpc.CallOption) (*MoneyBalance, error)
+	GetCurrentBalance(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*MoneyBalance, error)
 }
 
 type doshBankClient struct {
@@ -508,7 +545,7 @@ func NewDoshBankClient(cc grpc.ClientConnInterface) DoshBankClient {
 	return &doshBankClient{cc}
 }
 
-func (c *doshBankClient) GetCurrentBalance(ctx context.Context, in *PrepareResponse, opts ...grpc.CallOption) (*MoneyBalance, error) {
+func (c *doshBankClient) GetCurrentBalance(ctx context.Context, in *PrepareRequest, opts ...grpc.CallOption) (*MoneyBalance, error) {
 	out := new(MoneyBalance)
 	err := c.cc.Invoke(ctx, DoshBank_GetCurrentBalance_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -521,7 +558,7 @@ func (c *doshBankClient) GetCurrentBalance(ctx context.Context, in *PrepareRespo
 // All implementations must embed UnimplementedDoshBankServer
 // for forward compatibility
 type DoshBankServer interface {
-	GetCurrentBalance(context.Context, *PrepareResponse) (*MoneyBalance, error)
+	GetCurrentBalance(context.Context, *PrepareRequest) (*MoneyBalance, error)
 	mustEmbedUnimplementedDoshBankServer()
 }
 
@@ -529,7 +566,7 @@ type DoshBankServer interface {
 type UnimplementedDoshBankServer struct {
 }
 
-func (UnimplementedDoshBankServer) GetCurrentBalance(context.Context, *PrepareResponse) (*MoneyBalance, error) {
+func (UnimplementedDoshBankServer) GetCurrentBalance(context.Context, *PrepareRequest) (*MoneyBalance, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCurrentBalance not implemented")
 }
 func (UnimplementedDoshBankServer) mustEmbedUnimplementedDoshBankServer() {}
@@ -546,7 +583,7 @@ func RegisterDoshBankServer(s grpc.ServiceRegistrar, srv DoshBankServer) {
 }
 
 func _DoshBank_GetCurrentBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PrepareResponse)
+	in := new(PrepareRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -558,7 +595,7 @@ func _DoshBank_GetCurrentBalance_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: DoshBank_GetCurrentBalance_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DoshBankServer).GetCurrentBalance(ctx, req.(*PrepareResponse))
+		return srv.(DoshBankServer).GetCurrentBalance(ctx, req.(*PrepareRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -576,5 +613,5 @@ var DoshBank_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "Director/services.proto",
+	Metadata: "director/services.proto",
 }
